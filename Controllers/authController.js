@@ -5,6 +5,9 @@ const express = require("express");
 
 const router = express.Router();
 
+
+
+
 const index = (req, res, next) => {
     User.find()
         .then(users => {
@@ -20,7 +23,6 @@ const index = (req, res, next) => {
 const login = (req, res, next) => {
     const { email, password } = req.body;
 
-
     User.findOne({ $or: [{ email: email }, { phone: email }] })
         .then(user => {
             if (user) {
@@ -29,26 +31,35 @@ const login = (req, res, next) => {
                         res.json({ message: err })
                     }
                     if (result) {
-                        const hash = { name: user._id }
+                        const hash = { id: user._id }
                         const accessToken = generateAccessToken(hash)
 
                         res.status(200).send(JSON.stringify({ //200 OK
-                            _id: user._id,
-                            email: user.email,
-                            password: user.password,
-                            phone: user.phone,
-                            avatar: user.avatar,
-                            token: accessToken,
+                            status: 200,
+                            message: "success",
+                            user: {
+                                _id: user._id,
+                                email: user.email,
+                                password: user.password,
+                                phone: user.phone,
+                                avatar: user.avatar,
+                                verified:user.verified,
+                                token: accessToken,
+                            }
                         }))
 
                     } else {
-                        res.status(201).send(JSON.stringify({ //201 incorrect password
+                        res.status(201).send(JSON.stringify({ //201 password
+                            status: 201,
                             message: "incorrect password"
                         }))
+
+
                     }
                 })
             } else {
-                res.status(202).send(JSON.stringify({ //202 user not found
+                res.status(202).send(JSON.stringify({ //200 OK
+                    status: 202,
                     message: "user not found"
                 }))
             }
@@ -68,7 +79,8 @@ const register = (req, res, next) => {
         User.findOne({ $or: [{ email: req.body.email }] })
             .then(user => {
                 if (user) {//user found
-                    res.status(201).send(JSON.stringify({
+                    res.status(200).send(JSON.stringify({
+                        status: 201,
                         message: 'User exist'
                     }))
                 } else {//no user found
@@ -76,10 +88,12 @@ const register = (req, res, next) => {
                         email: req.body.email,
                         password: hashedPass,
                         phone: req.body.phone,
-                        avatar: req.body.avatar
+                        avatar: "",
+                        verified: 0
                     })
                     user.save().then(user => {
                         res.status(200).send(JSON.stringify({
+                            status: 200,
                             message: 'User Added Successfully!'
                         }))
                     })
@@ -93,12 +107,71 @@ const register = (req, res, next) => {
     })//end hash
 }
 
+const sendVerificationCode = (req, res, next) => {
 
-router.get('/', authenticateToken, index)
+    var phone = req.body.phone
+    var code = req.body.verificationCode
+    var mailContent = `Almost done, To complete your Edumax sign up, we just need to verify your account: Please copy the code below to verify your account:` + code
+
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const phoneNumber = process.env.TWILIO_PHONE_NUMBER;
+
+    const client = require('twilio')(accountSid, authToken);
+
+    client.messages
+        .create({ body: mailContent, from: phoneNumber, to: '+216' + phone })
+        .then(message => res.json({ status: 200, message: 'sent' }))
+        .catch(error => res.json({ status: 200, message: 'error sending' }));
+
+}
+
+const verifyAccount = (req, res, next) => {
+
+    let updatedUser = {
+        verified: 1
+    }
+
+    User.findOneAndUpdate({ email: req.body.email }, { $set: updatedUser })
+        .then((user) => {
+            const hash = { id: user._id }
+            const token = generateAccessToken(hash)
+            res.json({
+                _id: user._id,
+                email: user.email,
+                password: user.password,
+                phone: user.phone,
+                avatar: user.avatar,
+                verified: user.verified,
+                accessToken:token
+            })
+        })
+        .catch(error => {
+            res.json({
+                _id: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                phone: "",
+                sexe: "",
+                avatar: ""
+            })
+        })
+}
+
+
+
+
+router.get('/', index)
 
 //authentification
 router.post('/login', login) //email,password
 router.post('/register', register)
+
+router.post('/sendVerificationCode', sendVerificationCode)
+router.post('/verifyAccount', verifyAccount)
+
 
 
 module.exports = router

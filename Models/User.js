@@ -12,6 +12,9 @@ const user = new mongoose.Schema({
   },
   avatar: {
     type: String
+  },
+  verified: {
+    type: Number
   }
 },{timestamps:true})
 
