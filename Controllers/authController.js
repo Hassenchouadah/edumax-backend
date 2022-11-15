@@ -33,7 +33,7 @@ const login = (req, res, next) => {
                     if (result) {
                         const hash = { id: user._id }
                         const accessToken = generateAccessToken(hash)
-
+                        
                         res.status(200).send(JSON.stringify({ //200 OK
                             status: 200,
                             message: "success",
@@ -89,7 +89,8 @@ const register = (req, res, next) => {
                         password: hashedPass,
                         phone: req.body.phone,
                         avatar: "",
-                        verified: 0
+                        verified: 0,
+                        token:""
                     })
                     user.save().then(user => {
                         res.status(200).send(JSON.stringify({
@@ -143,19 +144,18 @@ const verifyAccount = (req, res, next) => {
                 phone: user.phone,
                 avatar: user.avatar,
                 verified: user.verified,
-                accessToken:token
+                token:token
             })
         })
         .catch(error => {
             res.json({
                 _id: "",
-                firstName: "",
-                lastName: "",
                 email: "",
                 password: "",
                 phone: "",
-                sexe: "",
-                avatar: ""
+                avatar: "",
+                verified:0,
+                token:""
             })
         })
 }

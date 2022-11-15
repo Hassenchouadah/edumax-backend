@@ -12,9 +12,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 
-
+app.use('/uploads', express.static(__dirname + '/public'));
 
 app.use('/api/auth', require('./Controllers/authController'))
+app.use('/api/mentors', require('./Controllers/mentorController'))
+app.use('/api/categories', require('./Controllers/categoryController'))
+app.use('/api/promotions', require('./Controllers/promotionController'))
 
 
 connectDB();
