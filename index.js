@@ -18,7 +18,8 @@ app.use('/api/auth', require('./Controllers/authController'))
 app.use('/api/mentors', require('./Controllers/mentorController'))
 app.use('/api/categories', require('./Controllers/categoryController'))
 app.use('/api/promotions', require('./Controllers/promotionController'))
+app.use('/api/courses', require('./Controllers/courseController'))
 
 
 connectDB();
-app.listen(5000, () => console.log(`app Listening on port 5000`));
+app.listen(5001, () => console.log(`app Listening on port 5001`));
