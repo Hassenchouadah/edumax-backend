@@ -8,6 +8,7 @@ const router = express.Router();
 const index = (req, res, next) => {
     
     Course.find()
+        .populate('mentor')
         .then(courses => {
             res.json(courses)
         })
@@ -17,6 +18,22 @@ const index = (req, res, next) => {
             })
         })
 }
+
+const getCourseById = (req, res, next) => {
+    const { id } = req.params;
+
+    Course.findOne({ '_id': id })
+        .populate('mentor')
+        .then(course => {
+            res.json(course)
+        })
+        .catch(error => {
+            res.json({
+                message: "an error occured when displaying Course"
+            })
+        })
+}
+
 
 const init = async (req, res, next) => {
     let course1 = new Course({
@@ -62,6 +79,7 @@ const init = async (req, res, next) => {
 
 
 router.get('/',index)
+router.get('/:id',getCourseById);
 //router.get('/init', init)
 
 

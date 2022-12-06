@@ -13,6 +13,10 @@ const course = new mongoose.Schema({
     price: {
         type: String
     },
+    mentor:{
+        type: mongoose.Schema.ObjectId,
+        ref: 'mentors'
+      },
 }, { timestamps: true })
 
 const Course = mongoose.model('courses', course);
