@@ -76,8 +76,22 @@ const init = async (req, res, next) => {
         message: 'Course Added Successfully!'
     }))
 }
+const getCoursesByMentor = (req, res, next) => {
+    const { id } = req.params;
 
+    Course.find({ 'mentor': id })
+        .populate('mentor')
+        .then(courses => {
+            res.json(courses)
+        })
+        .catch(error => {
+            res.json({
+                message: "an error occured when displaying Course"
+            })
+        })
+}
 
+router.get('/getCoursesByMentor/:id',getCoursesByMentor)
 router.get('/',index)
 router.get('/:id',getCourseById);
 //router.get('/init', init)

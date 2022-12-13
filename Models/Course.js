@@ -15,7 +15,7 @@ const course = new mongoose.Schema({
     },
     mentor:{
         type: mongoose.Schema.ObjectId,
-        ref: 'mentors'
+        ref: 'users'
       },
 }, { timestamps: true })
 

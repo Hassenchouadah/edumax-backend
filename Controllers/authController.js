@@ -90,7 +90,10 @@ const register = (req, res, next) => {
                         phone: req.body.phone,
                         avatar: "",
                         verified: 0,
-                        token:""
+                        token:"",
+                        firstName:"",
+                        lastName:"",
+                        role:"user"
                     })
                     user.save().then(user => {
                         res.status(200).send(JSON.stringify({
@@ -144,7 +147,10 @@ const verifyAccount = (req, res, next) => {
                 phone: user.phone,
                 avatar: user.avatar,
                 verified: user.verified,
-                token:token
+                token:token,
+                firstName:user.firstName,
+                lastName:user.lastName,
+                role:user.role
             })
         })
         .catch(error => {
@@ -159,6 +165,7 @@ const verifyAccount = (req, res, next) => {
             })
         })
 }
+
 
 
 

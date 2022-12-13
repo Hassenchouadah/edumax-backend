@@ -20,6 +20,8 @@ app.use('/api/categories', require('./Controllers/categoryController'))
 app.use('/api/promotions', require('./Controllers/promotionController'))
 app.use('/api/courses', require('./Controllers/courseController'))
 
+app.use('/api/chat',require('./Controllers/chatController'))
+
 
 connectDB();
 app.listen(5001, () => console.log(`app Listening on port 5001`));

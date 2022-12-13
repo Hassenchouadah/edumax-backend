@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const user = new mongoose.Schema({
+  firstName: {
+    type: String
+  },
+  lastName: {
+      type: String
+  },
   email: {
     type: String
   },
@@ -15,6 +21,9 @@ const user = new mongoose.Schema({
   },
   verified: {
     type: Number
+  },
+  role: {
+    type: String
   }
 },{timestamps:true})
 
