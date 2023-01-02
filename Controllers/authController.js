@@ -39,6 +39,9 @@ const login = (req, res, next) => {
                             message: "success",
                             user: {
                                 _id: user._id,
+                                firstName:user.firstName,
+                                lastName:user.lastName,
+                                role:user.role,
                                 email: user.email,
                                 password: user.password,
                                 phone: user.phone,
@@ -91,8 +94,8 @@ const register = (req, res, next) => {
                         avatar: "",
                         verified: 0,
                         token:"",
-                        firstName:"",
-                        lastName:"",
+                        firstName:req.body.firstName,
+                        lastName:req.body.lastName,
                         role:"user"
                     })
                     user.save().then(user => {

@@ -5,6 +5,7 @@ const route = express.Router();
    
 //show messages list
 const getMessages = (req,res,next)  => {
+
 	try 
 	{
 	    Message.find({'sender':req.body.senderId,'receiver':req.body.connectedId}).exec(function (err, messages) {
@@ -26,8 +27,10 @@ const getMessages = (req,res,next)  => {
 					        else {
 					        	if (secondmessages.length==0) {//try backwards
 					        		res.json([]);
+									console.log("asef")
 					        	} else {
 					        		res.json(secondmessages);
+									console.log(secondmessages)
 					        	}
 					        }
 					    });
@@ -46,11 +49,13 @@ const getMessages = (req,res,next)  => {
 					        else {
 					        	if (secondmessages.length==0) {
 					        		res.json(chat);
+									console.log(chat)
 					        	} else {
 					        		for (var i = 0; i < secondmessages.length; i++) {
 					        			chat.push(secondmessages[i])
 					        		}
 					        		res.json(chat);
+									console.log(chat)
 					        	}
 					        }
 					    });
@@ -70,12 +75,14 @@ const getMessages = (req,res,next)  => {
 
 //add product
 const addMessage = (req,res,next) => {
+
 	let message = new Message({
 		sender: req.body.sender,
 		receiver: req.body.receiver,
 		type: req.body.type,
 		message: req.body.message
 	})
+
 	message.save()
 	.then(response => {
 		res.json({
